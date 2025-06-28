@@ -29,12 +29,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zarar2312/ark-cross-server-chat.git"
+    "url": "git+https://github.com/zarar2312/ark-chat-consolidation.git"
   },
   "bugs": {
-    "url": "https://github.com/zarar2312/ark-cross-server-chat/issues"
+    "url": "https://github.com/zarar2312/ark-chat-consolidation/issues"
   },
-  "homepage": "https://github.com/zarar2312/ark-cross-server-chat#readme",
+  "homepage": "https://github.com/zarar2312/ark-chat-consolidation#readme",
   "author": {
     "name": "Efraim Karataş",
     "email": "iletisim@minibarindirma.com"
