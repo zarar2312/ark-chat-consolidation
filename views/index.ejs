@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand gradient-text" href="/">
+                <i class="fas fa-gamepad me-2"></i>
+                <span class="mobile-hidden">Ark Cross-Server Chat</span>
+                <span class="mobile-only">Ark Chat</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>
+                            <span class="mobile-hidden">Ana Sayfa</span>
+                            <span class="mobile-only">Ana</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <i class="fas fa-cog me-1"></i>
+                            <span class="mobile-hidden">Admin</span>
+                            <span class="mobile-only">Admin</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Sunucu Durumu -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card animated-glow">
+                    <div class="card-header">
+                        <h5 class="gradient-text d-flex align-items-center">
+                            <i class="fas fa-server me-2"></i>
+                            <span>Sunucular</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="server-list">
+                            <% servers.forEach(function(server) { %>
+                                <div class="server-item mb-2 p-2 border rounded" data-server-id="<%= server.id %>">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="flex-grow-1">
+                                            <strong class="server-name"><%= server.name %></strong>
+                                            <br>
+                                            <small class="text-muted mobile-hidden"><%= server.host %>:<%= server.port %></small>
+                                        </div>
+                                        <div class="d-flex flex-column align-items-end">
+                                            <span class="badge bg-secondary status-badge mb-1" id="status-<%= server.id %>">
+                                                <i class="fas fa-circle"></i> Bağlanıyor...
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="fas fa-users me-1"></i>
+                                            <span id="players-<%= server.id %>">0</span> oyuncu
+                                        </small>
+                                        <small class="text-muted mobile-only">
+                                            <%= server.host %>:<%= server.port %>
+                                        </small>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İstatistikler -->
+                <div class="card mt-3 animated-border mobile-hidden">
+                    <div class="card-header">
+                        <h6 class="gradient-text"><i class="fas fa-chart-bar me-2"></i>İstatistikler</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-container">
+                            <div class="stat-item">
+                                <div class="stat-value" id="total-messages"><%= stats.totalMessages || 0 %></div>
+                                <div class="stat-label">Mesaj</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="total-players"><%= stats.totalPlayers || 0 %></div>
+                                <div class="stat-label">Oyuncu</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="servers-online"><%= stats.serversOnline || 0 %></div>
+                                <div class="stat-label">Sunucu</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="uptime">0</div>
+                                <div class="stat-label">Süre</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Alanı -->
+            <div class="col-lg-8 col-md-6 order-first order-lg-last">
+                <div class="card animated-glow">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="gradient-text mb-0 d-flex align-items-center">
+                                <i class="fas fa-comments me-2"></i>
+                                <span class="mobile-hidden">Cross-Server Chat</span>
+                                <span class="mobile-only">Chat</span>
+                                <small class="text-muted mobile-hidden ms-2">
+                                    <i class="fas fa-globe me-1"></i>Canlı
+                                </small>
+                            </h5>
+                            <div class="chat-controls">
+                                <!-- Mobil butonlar -->
+                                <div class="d-block d-lg-none">
+                                    <button class="btn btn-blackguard btn-sm mobile-dark-btn" id="clear-chat" title="Chat'i Temizle">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="btn btn-blackguard btn-sm mobile-dark-btn ms-2" id="auto-scroll-toggle" title="Otomatik Kaydırma">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </div>
+                                <!-- Desktop butonlar -->
+                                <div class="d-none d-lg-block">
+                                    <button class="btn btn-blackguard btn-sm" id="clear-chat-desktop">
+                                        <i class="fas fa-trash me-1"></i>Temizle
+                                    </button>
+                                    <button class="btn btn-blackguard btn-sm ms-2" id="auto-scroll-toggle-desktop">
+                                        <i class="fas fa-arrow-down me-1"></i>Otomatik Kaydır
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="chat-container" class="chat-container">
+                            <div id="chat-messages" class="chat-messages">
+                                <!-- Mesajlar buraya gelecek -->
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="message-input" 
+                                       placeholder="Mesajınızı yazın..." 
+                                       maxlength="200"
+                                       autocomplete="off">
+                                <button class="btn btn-blackguard mobile-send-btn" type="button" id="send-message" title="Mesaj Gönder">
+                                    <i class="fas fa-paper-plane d-lg-none"></i>
+                                    <span class="d-none d-lg-flex align-items-center">
+                                        <i class="fas fa-paper-plane me-2"></i>Gönder
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="mobile-only mt-2 text-center">
+                                <small class="text-muted">
+                                    <span id="char-count">0</span>/200 karakter
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- Initial Data -->
+    <script>
+        window.initialData = {
+            servers: <%- JSON.stringify(servers) %>,
+            stats: <%- JSON.stringify(stats) %>
+        };
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
