@@ -3,7 +3,7 @@
 [![Node.### 🐳 **Deployment Seçenekleri**
 - Docker desteği ile kolay kurulum
 - Standalone kurulum
-- Auto-installer scriptler (Windows/Linux)ttps://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
+- Auto-installer scriptler (Windows/Linux)(https://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
 [![Mobile](https://img.shields.io/badge/Mobile-Responsive-brightgreen.svg)](#-screenshots)
@@ -320,9 +320,8 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 > **Join thousands of Ark players enjoying seamless cross-server communication!**
 
-[![Get Started](https://img.shields.io/badge/Get%20Started-Download%20Now-success?style=for-the-badge&logo=github)](https://github.com/USERNAME/ark-cross-server-chat/releases)
-[![Documentation](https://img.shields.io/badge/Read%20Docs-Learn%20More-blue?style=for-the-badge&logo=gitbook)](https://github.com/USERNAME/ark-cross-server-chat/wiki)
-[![Discord](https://img.shields.io/badge/Join%20Community-Discord-7289da?style=for-the-badge&logo=discord)](https://discord.gg/your-invite)
+[![Get Started](https://img.shields.io/badge/Get%20Started-Download%20Now-success?style=for-the-badge&logo=github)](https://github.com/zarar2312/ark-chat-consolidation/releases)
+[![Discord](https://img.shields.io/badge/Join%20Community-Discord-7289da?style=for-the-badge&logo=discord)](https://discord.gg/FetHamCe5H)
 
 </div>
 
