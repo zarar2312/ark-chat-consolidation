@@ -1,9 +1,6 @@
 # 🎮 Ark Cross-Server Chat System
 
-[![Node.### 🐳 **Deployment Seçenekleri**
-- Docker desteği ile kolay kurulum
-- Standalone kurulum
-- Auto-installer scriptler (Windows/Linux)ttps://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com/)
 [![Mobile](https://img.shields.io/badge/Mobile-Responsive-brightgreen.svg)](#-screenshots)
