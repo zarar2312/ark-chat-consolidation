@@ -290,8 +290,6 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 - Mockup veya örnek paylaşın
 
 ### 🛠️ **Teknik Destek**
-- Wiki dokümanlarını kontrol edin
-- FAQ bölümünü inceleyin  
 - Community Discord'a katılın
 
 ## 🙏 Teşekkürler
@@ -321,9 +319,3 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 [![Discord](https://img.shields.io/badge/Join%20Community-Discord-7289da?style=for-the-badge&logo=discord)](https://discord.gg/FetHamCe5H)
 
 </div>
-
----
-
-**Made with ❤️ for Ark Gaming Community**
-
-*Bu sistem Ark Survival Evolved oyununu daha sosyal ve bağlantılı hale getirmek için geliştirilmiştir.*
