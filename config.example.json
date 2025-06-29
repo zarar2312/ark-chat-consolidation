@@ -13,7 +13,13 @@
       "port": 27020,
       "password": "your_rcon_password",
       "enabled": true,
-      "reconnectInterval": 5000
+      "reconnectInterval": 5000,
+      "crossServerBot": {
+        "enabled": true,
+        "botName": "[CROSS-CHAT] TheIsland",
+        "messagePrefix": "🏝️",
+        "chatToOtherServers": true
+      }
     },
     {
       "id": "server2",
@@ -22,13 +28,26 @@
       "port": 27020,
       "password": "your_rcon_password",
       "enabled": true,
-      "reconnectInterval": 5000
+      "reconnectInterval": 5000,
+      "crossServerBot": {
+        "enabled": true,
+        "botName": "[CROSS-CHAT] Ragnarok",
+        "messagePrefix": "🏔️",
+        "chatToOtherServers": true
+      }
     }
   ],
   "chatFormatting": {
     "crossServerPrefix": "[GLOBAL]",
     "showServerName": true,
-    "timestampFormat": "HH:mm:ss"
+    "timestampFormat": "HH:mm:ss",
+    "crossServerChat": {
+      "enabled": true,
+      "broadcastToGameServers": true,
+      "messageFormat": "{prefix} {playerName}: {message}",
+      "excludeOwnMessages": false,
+      "maxMessageLength": 150
+    }
   },
   "filters": {
     "enableProfanityFilter": false,

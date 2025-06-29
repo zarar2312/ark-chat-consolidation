@@ -9,6 +9,7 @@
     "test": "node scripts/test-rcon.js",
     "test:chat": "node scripts/test-chat.js",
     "test:chars": "node scripts/test-turkish-chars.js",
+    "test:crossbot": "node scripts/test-cross-server-bot.js",
     "docker:build": "docker build -t ark-cross-server-chat .",
     "docker:run": "docker run -d -p 3000:3000 ark-cross-server-chat"
   },
