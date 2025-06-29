@@ -29,6 +29,7 @@ Modern ve mobil-uyumlu web arayüzü ile **Ark Survival Evolved** sunucularını
 - Birden fazla Ark sunucusu desteği
 - Gerçek zamanlı mesaj senkronizasyonu
 - Otomatik bağlantı yönetimi ve yeniden bağlanma
+- **🤖 Cross-Server Bot Sistemi**: Her sunucuda özel bot karakteri ile diğer sunucuların mesajlarını gösterir
 
 ### 🎨 **Modern Web Arayüzü**
 - Responsive tasarım (mobil, tablet, desktop)
@@ -42,6 +43,7 @@ Modern ve mobil-uyumlu web arayüzü ile **Ark Survival Evolved** sunucularını
 - Spam ve döngü engelleme sistemi
 - Chat geçmişi ve anlık istatistikler
 - Admin paneli ile sistem yönetimi
+- **🎮 Oyun İçi Cross-Chat**: Diğer sunucuların mesajları oyun içinde bot karakterleri aracılığıyla görünür
 
 ### 🐳 **Deployment Seçenekleri**
 - Docker desteği ile kolay kurulum
@@ -81,12 +83,40 @@ cp config.example.json config.json
   "servers": [
     {
       "id": "server1",
-      "name": "Primal Fear - Ragnarok",
+      "name": "Ragnarok Server",
       "host": "192.168.1.100",
       "port": 27020,
-      "password": "your_rcon_password"
+      "password": "your_rcon_password",
+      "crossServerBot": {
+        "enabled": true,
+        "botName": "[CROSS-CHAT] Ragnarok",
+        "messagePrefix": "🏔️",
+        "chatToOtherServers": true
+      }
+    },
+    {
+      "id": "server2", 
+      "name": "The Island Server",
+      "host": "192.168.1.101",
+      "port": 27020,
+      "password": "your_rcon_password",
+      "crossServerBot": {
+        "enabled": true,
+        "botName": "[CROSS-CHAT] TheIsland", 
+        "messagePrefix": "🏝️",
+        "chatToOtherServers": true
+      }
     }
   ],
+  "chatFormatting": {
+    "crossServerChat": {
+      "enabled": true,
+      "broadcastToGameServers": true,
+      "messageFormat": "{prefix} {playerName}: {message}",
+      "excludeOwnMessages": false,
+      "maxMessageLength": 150
+    }
+  },
   "webPort": 3000,
   "chatPollingInterval": 5000
 }
@@ -290,8 +320,6 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 - Mockup veya örnek paylaşın
 
 ### 🛠️ **Teknik Destek**
-- Wiki dokümanlarını kontrol edin
-- FAQ bölümünü inceleyin  
 - Community Discord'a katılın
 
 ## 🙏 Teşekkürler
@@ -322,8 +350,50 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 </div>
 
----
+## 🤖 Cross-Server Bot Sistemi
 
-**Made with ❤️ for Ark Gaming Community**
+### 🌟 **Oyun İçi Cross-Chat Deneyimi**
+Bu yenilikçi özellik ile diğer sunuculardan gelen mesajları, oyun içinde özel bot karakterleri aracılığıyla görebilirsiniz!
 
-*Bu sistem Ark Survival Evolved oyununu daha sosyal ve bağlantılı hale getirmek için geliştirilmiştir.*
+#### 📱 **Nasıl Çalışır?**
+1. **The Island** sunucusunda bir oyuncu mesaj yazıyor
+2. Mesaj **Ragnarok** sunucusunda `[CROSS-CHAT] TheIsland` bot'u tarafından gösteriliyor
+3. Her sunucu kendi bot karakterine sahip ve diğer sunucuların mesajlarını iletir
+
+#### ⚙️ **Bot Konfigürasyonu**
+```json
+{
+  "crossServerBot": {
+    "enabled": true,                    // Bot'u aktifleştir
+    "botName": "[CROSS-CHAT] Ragnarok", // Bot karakter adı (ARK'ta görünür)
+    "messagePrefix": "🏔️",             // Mesaj öneki (emoji/simge)
+    "chatToOtherServers": true          // Bu sunucudan diğerlerine mesaj gönder
+  }
+}
+```
+
+#### 🎮 **Oyun İçi Görünüm**
+- **Ragnarok sunucusunda**: `🏝️ JohnDoe: Merhaba dostlar!` → `[CROSS-CHAT] TheIsland` tarafından gönderilir
+- **The Island sunucusunda**: `🏔️ JohnDoe: Merhaba dostlar!` → `[CROSS-CHAT] Ragnarok` tarafından gönderilir
+
+#### 🔧 **Özelleştirme Seçenekleri**
+- **Bot İsimleri**: Her sunucu için özel bot isimleri
+- **Emoji Prefiksleri**: Hangi sunucudan geldiğini göstermek için özel emojiler
+- **Mesaj Formatı**: Özelleştirilebilir mesaj şablonları
+- **Uzunluk Kontrolü**: Uzun mesajları otomatik kısaltma
+- **Filtreleme**: Hangi sunucuların mesajlarının paylaşılacağını belirleme
+
+#### 🛡️ **Spam Koruması**
+- **Döngü Engelleme**: Bot mesajları tekrar bot mesajı olarak gönderilmez
+- **Hız Sınırlama**: Çok hızlı mesaj gönderimini engeller
+- **Karakter Limiti**: ARK'ın chat limitine uygun mesaj kısaltma
+
+### 🧪 **Test ve Kurulum**
+```bash
+# Cross-server bot özelliğini test et
+npm run test:crossbot
+
+# Normal test scriptleri
+npm run test:chat
+npm run test:chars
+```

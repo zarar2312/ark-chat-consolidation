@@ -121,10 +121,15 @@ class ArkChatManager {
 
         this.logger.info(`[${message.serverName}] ${message.playerName}: ${message.message}`);
 
-        // Sadece web'den gelen mesajları diğer sunuculara ilet
-        // Oyun içinden gelen mesajları spam yapmamak için iletme
-        if (!message.isFromGame) {
-            this.broadcastMessage(message);
+        // Cross-server chat ayarlarını kontrol et
+        const crossServerConfig = this.config.chatFormatting?.crossServerChat;
+        
+        // Mesajı diğer sunuculara ilet (hem web hem oyun içi mesajlar için)
+        if (crossServerConfig?.enabled && crossServerConfig?.broadcastToGameServers) {
+            // Oyun içi mesajları da iletmek istiyorsak veya web'den gelen mesajsa
+            if (!crossServerConfig.excludeOwnMessages || !message.isFromGame) {
+                this.broadcastMessage(message);
+            }
         }
 
         // Web istemcilerine her zaman gönder (oyun içi + web mesajları)
@@ -154,24 +159,50 @@ class ArkChatManager {
     }
 
     async broadcastMessage(originalMessage) {
-        const prefix = this.config.chatFormatting?.crossServerPrefix || '[GLOBAL]';
-        const showServerName = this.config.chatFormatting?.showServerName !== false;
-        
-        let formattedMessage = `${prefix} `;
-        
-        if (showServerName) {
-            formattedMessage += `[${originalMessage.serverName}] `;
+        // Cross-server chat ayarlarını kontrol et
+        const crossServerConfig = this.config.chatFormatting?.crossServerChat;
+        if (!crossServerConfig?.enabled || !crossServerConfig?.broadcastToGameServers) {
+            return;
         }
-        
-        formattedMessage += `${originalMessage.playerName}: ${originalMessage.message}`;
 
-        // Tüm sunuculara (orijinal hariç) mesajı gönder
+        // Oyun içinden gelen mesajları diğer sunuculara iletmeyi kontrol et
+        if (originalMessage.isFromGame && crossServerConfig.excludeOwnMessages) {
+            return;
+        }
+
+        // Tüm sunuculara (orijinal hariç) mesajı bot karakteri aracılığıyla gönder
         for (const [serverId, server] of this.servers) {
             if (serverId !== originalMessage.serverId && server.isConnected()) {
                 try {
-                    await server.sendChatMessage(originalMessage.message, `[${originalMessage.serverName}] ${originalMessage.playerName}`);
+                    // Hedef sunucunun bot ayarlarını al
+                    const targetServerConfig = this.config.servers.find(s => s.id === serverId);
+                    if (!targetServerConfig?.crossServerBot?.enabled) {
+                        continue;
+                    }
+
+                    const botConfig = targetServerConfig.crossServerBot;
+                    
+                    // Mesaj formatını oluştur
+                    let formattedMessage = crossServerConfig.messageFormat || "{prefix} {playerName}: {message}";
+                    formattedMessage = formattedMessage
+                        .replace('{prefix}', botConfig.messagePrefix || '🌍')
+                        .replace('{playerName}', originalMessage.playerName)
+                        .replace('{message}', originalMessage.message)
+                        .replace('{serverName}', originalMessage.serverName);
+
+                    // Mesaj uzunluğunu kontrol et
+                    const maxLength = crossServerConfig.maxMessageLength || 150;
+                    if (formattedMessage.length > maxLength) {
+                        formattedMessage = formattedMessage.substring(0, maxLength - 3) + '...';
+                    }
+
+                    // Bot karakteri olarak mesaj gönder
+                    await server.sendChatMessage(formattedMessage, botConfig.botName);
+                    
+                    this.logger.debug(`Cross-server mesaj gönderildi: ${serverId} -> "${formattedMessage}"`);
+                    
                 } catch (error) {
-                    this.logger.error(`${serverId} sunucusuna mesaj gönderilemedi:`, error.message);
+                    this.logger.error(`${serverId} sunucusuna cross-server mesaj gönderilemedi:`, error.message);
                 }
             }
         }
