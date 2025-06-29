@@ -182,22 +182,26 @@ class ArkChatManager {
 
                     const botConfig = targetServerConfig.crossServerBot;
                     
-                    // Mesaj formatını oluştur
-                    let formattedMessage = crossServerConfig.messageFormat || "{prefix} {playerName}: {message}";
+                    // Türkçe karakterleri güvenli karakterlere dönüştür
+                    const safeName = this.makeSafeForArk(originalMessage.playerName);
+                    const safeMessage = this.makeSafeForArk(originalMessage.message);
+                    
+                    // Mesaj formatını oluştur (emoji yerine safe prefix kullan)
+                    let formattedMessage = crossServerConfig.messageFormat || "[{serverName}] {playerName}: {message}";
                     formattedMessage = formattedMessage
-                        .replace('{prefix}', botConfig.messagePrefix || '🌍')
-                        .replace('{playerName}', originalMessage.playerName)
-                        .replace('{message}', originalMessage.message)
-                        .replace('{serverName}', originalMessage.serverName);
+                        .replace('{prefix}', this.makeSafeForArk(botConfig.messagePrefix) || '[X]')
+                        .replace('{playerName}', safeName)
+                        .replace('{message}', safeMessage)
+                        .replace('{serverName}', this.makeSafeForArk(originalMessage.serverName));
 
                     // Mesaj uzunluğunu kontrol et
-                    const maxLength = crossServerConfig.maxMessageLength || 150;
+                    const maxLength = crossServerConfig.maxMessageLength || 120;
                     if (formattedMessage.length > maxLength) {
                         formattedMessage = formattedMessage.substring(0, maxLength - 3) + '...';
                     }
 
                     // Bot karakteri olarak mesaj gönder
-                    await server.sendChatMessage(formattedMessage, botConfig.botName);
+                    await server.sendChatMessage(formattedMessage, this.makeSafeForArk(botConfig.botName));
                     
                     this.logger.debug(`Cross-server mesaj gönderildi: ${serverId} -> "${formattedMessage}"`);
                     
@@ -328,6 +332,34 @@ class ArkChatManager {
 
         this.servers.clear();
         this.logger.info('Ark Chat Manager durduruldu');
+    }
+
+    makeSafeForArk(text) {
+        if (!text) return '';
+        
+        // Türkçe karakterleri güvenli ASCII karakterlere dönüştür
+        return text
+            .replace(/ğ/g, 'g')
+            .replace(/Ğ/g, 'G')
+            .replace(/ü/g, 'u')
+            .replace(/Ü/g, 'U')
+            .replace(/ş/g, 's')
+            .replace(/Ş/g, 'S')
+            .replace(/ı/g, 'i')
+            .replace(/İ/g, 'I')
+            .replace(/ö/g, 'o')
+            .replace(/Ö/g, 'O')
+            .replace(/ç/g, 'c')
+            .replace(/Ç/g, 'C')
+            // Emojileri text'e dönüştür
+            .replace(/🌍/g, '[WORLD]')
+            .replace(/🏝️/g, '[ISLAND]')
+            .replace(/🏔️/g, '[MOUNTAIN]')
+            .replace(/🔥/g, '[FIRE]')
+            .replace(/⚡/g, '[THUNDER]')
+            .replace(/🌟/g, '[STAR]')
+            // Diğer özel karakterleri temizle
+            .replace(/[^\x20-\x7E]/g, ''); // Sadece ASCII yazdırılabilir karakterler
     }
 }
 

@@ -17,7 +17,7 @@
     "ark",
     "survival",
     "evolved",
-    "chat", 
+    "chat",
     "cross-server",
     "rcon",
     "gaming",
@@ -56,7 +56,8 @@
     "ws": "^8.13.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "socket.io-client": "^4.8.1"
   },
   "engines": {
     "node": ">=16.0.0"

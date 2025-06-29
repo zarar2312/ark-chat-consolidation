@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
+const moment = require('moment');
 require('dotenv').config();
 
 const ArkChatManager = require('./src/arkChatManager');
@@ -103,6 +104,38 @@ class ArkChatServer {
 
             socket.on('disconnect', () => {
                 this.logger.info(`Web istemcisi ayrıldı: ${socket.id}`);
+            });
+
+            // Mesaj gönderme
+            socket.on('sendMessage', async (data) => {
+                try {
+                    const { message, playerName = 'Web User', serverId = null } = data;
+                    
+                    if (!message || !message.trim()) {
+                        return;
+                    }
+
+                    // Web'den gelen mesaj objesi oluştur
+                    const chatMessage = {
+                        id: `web_${Date.now()}`,
+                        serverId: serverId || 'web',
+                        serverName: 'WEB',
+                        playerName: playerName,
+                        message: message.trim(),
+                        timestamp: new Date(),
+                        time: moment().format('HH:mm:ss'),
+                        isFromGame: false // Web'den gelen mesaj
+                    };
+
+                    // Chat manager'a gönder
+                    this.arkChatManager.handleChatMessage(chatMessage);
+                    
+                    this.logger.info(`Web mesajı: [${playerName}] ${message}`);
+                    
+                } catch (error) {
+                    this.logger.error('Web mesajı işlenirken hata:', error);
+                    socket.emit('messageError', { error: 'Mesaj gönderilemedi' });
+                }
             });
 
             // Admin komutları

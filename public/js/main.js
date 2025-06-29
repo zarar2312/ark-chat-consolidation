@@ -13,6 +13,9 @@ class ArkChatClient {
         // Initial data'yı yükle
         this.loadInitialData();
         
+        // Player name kontrolü
+        this.checkPlayerName();
+        
         this.initializeEventListeners();
         this.connectSocket();
     }
@@ -199,6 +202,14 @@ class ArkChatClient {
                 this.setupMobileFeatures();
             }
         });
+        
+        // Player name değiştirme butonu
+        const changePlayerNameBtn = document.getElementById('change-player-name');
+        if (changePlayerNameBtn) {
+            changePlayerNameBtn.addEventListener('click', () => {
+                this.showPlayerNameModal();
+            });
+        }
     }
 
     sendMessage() {
@@ -206,8 +217,14 @@ class ArkChatClient {
         const message = messageInput.value.trim();
         
         if (message) {
-            // Emit message via socket (implement this based on your socket events)
-            // this.socket.emit('sendMessage', { message });
+            // Oyuncu adını al (localStorage'dan veya varsayılan)
+            const playerName = localStorage.getItem('playerName') || 'Web User';
+            
+            // Socket üzerinden mesaj gönder
+            this.socket.emit('sendMessage', { 
+                message: message,
+                playerName: playerName 
+            });
             
             messageInput.value = '';
             const charCount = document.getElementById('char-count');
@@ -247,6 +264,10 @@ class ArkChatClient {
         this.socket.on('playerListUpdate', (data) => {
             this.updatePlayerCount(data.serverId, data.players.length);
             this.updateStats({ totalPlayers: data.totalPlayers });
+        });
+
+        this.socket.on('messageError', (data) => {
+            this.showNotification(data.error || 'Mesaj gönderilemedi', 'error');
         });
     }
 
@@ -491,6 +512,41 @@ class ArkChatClient {
         });
 
         modal.show();
+    }
+
+    checkPlayerName() {
+        const savedName = localStorage.getItem('playerName');
+        if (!savedName) {
+            this.showPlayerNameModal();
+        } else {
+            this.updatePlayerNameDisplay(savedName);
+        }
+    }
+
+    showPlayerNameModal() {
+        const playerName = prompt('Oyun içinde görünecek adınızı girin:', 'Web User');
+        if (playerName && playerName.trim()) {
+            const cleanName = playerName.trim().substring(0, 20); // Max 20 karakter
+            localStorage.setItem('playerName', cleanName);
+            this.updatePlayerNameDisplay(cleanName);
+        } else {
+            localStorage.setItem('playerName', 'Web User');
+            this.updatePlayerNameDisplay('Web User');
+        }
+    }
+
+    updatePlayerNameDisplay(name) {
+        // Player name'i chat input placeholder'ında göster
+        const messageInput = document.getElementById('message-input');
+        if (messageInput) {
+            messageInput.placeholder = `${name} olarak mesaj yazın...`;
+        }
+        
+        // Header'da player name göster (eğer element varsa)
+        const playerNameElement = document.getElementById('current-player-name');
+        if (playerNameElement) {
+            playerNameElement.textContent = name;
+        }
     }
 
     escapeHtml(text) {
